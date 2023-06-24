@@ -1,0 +1,83 @@
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression 
+from sklearn.metrics import accuracy_score
+
+# loading  the dataset to a panads DataFrame
+credit_card_data=pd.read_csv('/content/creditcard[1].csv')
+
+credit_card_data.head()
+credit_card_data.info()
+
+#distribuation of legit transaction & fraudulent transaction
+credit_card_data['Class'].value_counts()
+
+# Seperating the data for analysis 
+legit=credit_card_data[credit_card_data.Class==0]
+fraud=credit_card_data[credit_card_data.Class==1]
+
+#checking the number of missing values in each column
+credit_card_data.isnull().sum()
+
+print(legit.shape)
+print(fraud.shape)
+
+# Statastical measures of data 
+legit.Amount.describe()
+
+fraud.Amount.describe()
+
+# compare the values of both trasacations 
+credit_card_data.groupby('Class').mean()
+
+legit_sample=legit.sample(n=103)
+
+new_dataset=pd.concat([legit_sample,fraud],axis=0)
+
+new_dataset.head()
+
+new_dataset.tail()
+
+new_dataset['Class'].value_counts
+
+new_dataset.groupby('Class').mean()
+
+X=new_dataset.drop(columns='Class',axis=1)
+Y=new_dataset['Class']
+
+
+print(X)
+
+print(Y)
+
+X_train,X_test,Y_train,Y_test=train_test_split(X,Y,test_size=0.2,stratify=Y,random_state=2)
+
+print(X.shape,X_train.shape,X_test.shape)
+
+print(X.shape,X_train.shape,X_test.shape)
+
+model=LogisticRegression()
+
+# tranining the Logistic Regression model with training data
+model.fit(X_train,Y_train)
+
+#accuracy on training data
+X_train_prediction=model.predict(X_train)
+training_data_accuracy=accuracy_score(X_train_prediction,Y_train)
+
+print('Accuracy of Training data:',training_data_accuracy)
+
+#accuracy on test data
+X_test_prediction=model.predict(X_test)
+test_data_accuracy=accuracy_score(X_test_prediction,Y_test)
+
+print('Accuracy score of  test data:',test_data_accuracy)
+
+plt.plot(X_test,Y_test)
+plt.xlabel('Data Points')
+plt.ylabel('Accuracy')
+plt.show()
+
